@@ -20,7 +20,7 @@ type Todo struct {
 type Event struct {
 	Name     string
 	Duration time.Duration
-	Deadline time.Duration
+	Deadline time.Time
 	Start    time.Time
 	End      time.Time
 	TodoList []Todo
@@ -175,14 +175,13 @@ func formatDuration(duration time.Duration) string {
 	}
 }
 
-// TODO: Fix bracket issue
 func printDays(days []*Day, layout string) error {
 	if len(days) == 0 || layout == "" {
 		return fmt.Errorf("there were no days created so far")
 	}
 
 	for index, day := range days {
-		fmt.Printf("%d. {"+
+		fmt.Printf("%d. { "+
 			"Start of day: %s\n"+
 			"End of day: %s\n"+
 			"Duration: %s\n"+
@@ -190,34 +189,36 @@ func printDays(days []*Day, layout string) error {
 			index+1, day.StartOfDay.Format(layout), day.EndOfDay.Format(layout), formatDuration(day.Duration))
 
 		if len(day.Events) == 0 {
-			fmt.Println("]")
+			fmt.Println("]\n}")
 			continue
 		}
 		fmt.Println()
 
-		for index, event := range day.Events {
+		for eventIndex, event := range day.Events {
 			fmt.Printf("\t\t%d. { Title: %s, Duration: %s, Start: %s, End %s, Todo's: [",
-				index+1, event.Name, formatDuration(event.Duration), event.Start.Format(layout), event.End.Format(layout))
+				eventIndex+1, event.Name, formatDuration(event.Duration), event.Start.Format(layout), event.End.Format(layout))
 			if len(event.TodoList) == 0 {
-				fmt.Println("]")
+				fmt.Println("]}")
 				continue
 			}
 			fmt.Println()
 
-			for index, todo := range event.TodoList {
+			for todoIndex, todo := range event.TodoList {
 				var done string
-				done = "Not Done"
 				if todo.Done {
 					done = "Done"
+				} else {
+					done = "Not Done"
 				}
 
-				fmt.Printf("\t\t\t%d. {Name: %s, Description: %s, Deadline: %s, %s},\n",
-					index+1, todo.Name, todo.Description, todo.Deadline.Format(layout), done)
+				fmt.Printf("\t\t\t%d. {Name: %s, Description: %s, Deadline: %s, %s}\n",
+					todoIndex+1, todo.Name, todo.Description, todo.Deadline.Format(layout), done)
 			}
-			fmt.Println("\t],")
+			fmt.Println("\t\t]")
 		}
-		fmt.Println("\t]\n},")
+		fmt.Println("\t],\n}")
 	}
+	fmt.Println("}")
 
 	return nil
 }
@@ -265,7 +266,6 @@ func getDayByIndex(days []*Day, reader *bufio.Reader, layout string) (*Day, erro
 
 // TODO: Add a feature to let the user specify the start and end of the event if he wants
 // TODO: Add a feature to let the user specify the todos if he wants
-// TODO: Make date automatically be set to the date of the day
 func addNewEvent(days []*Day, reader *bufio.Reader, layout string) ([]*Day, error) {
 	if len(days) == 0 || layout == "" {
 		return days, fmt.Errorf("there were no days created so far")
@@ -280,11 +280,41 @@ func addNewEvent(days []*Day, reader *bufio.Reader, layout string) ([]*Day, erro
 	fmt.Print("Please enter the title of the event: ")
 	title, err := reader.ReadString('\n')
 	if err != nil {
-		return days, fmt.Errorf("error in reading string")
+		return days, fmt.Errorf("error in reading from stdin")
 	}
 
 	title = strings.TrimSpace(title)
 	newEvent.Name = title
+
+	for {
+		fmt.Print("Please enter a deadline for the event(If there is no deadline just press enter): ")
+		deadlineStr, err := reader.ReadString('\n')
+		if err != nil {
+			return days, fmt.Errorf("error in reading from stdin")
+		}
+		deadlineStr = strings.TrimSpace(deadlineStr)
+		if deadlineStr != "" {
+			var newLayout string
+			if len(layout) > 6 {
+				newLayout = layout[6:]
+			}
+
+			newEvent.Deadline, err = time.Parse(newLayout, deadlineStr)
+			if err != nil {
+				fmt.Println("Wrong format of input")
+				continue
+			}
+		}
+		break
+	}
+
+	// TODO: finish
+	fmt.Print("Do you have a specific start and end time? ")
+	deadlineStr, err := reader.ReadString('\n')
+	if err != nil {
+		return days, fmt.Errorf("error in reading from stdin")
+	}
+	deadlineStr = strings.TrimSpace(deadlineStr)
 
 	newEvent.Start, layout, err = getStartOf(layout, reader, days, "event")
 	if err != nil {
