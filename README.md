@@ -1,6 +1,6 @@
 # TaskWeave
 
-Welcome to TaskWeave, a simple yet powerful workload balancer **(Work in progress)** that I've designed to help single users
+Welcome to TaskWeave, a simple yet powerful workload balancer web app **(Work in progress)** that I've designed to help single users
 (and in the future maybe teams) efficiently manage their daily tasks.
 
 ## Features **(Work in progress)**
@@ -24,12 +24,13 @@ Please make sure you have Go installed on your system first.
 
 3. Build the application:
    ``` 
-   go build -o ./cmd/taskweave ./cmd/taskweave
+   ./build.bat
    ```
 
-4. Now, run the application with:
+4. Now, run the application with (**on your local host**):
    ```
-   ./taskweave
+   cd out
+   ./TaskWeave
    ```
 
 ## Usage
