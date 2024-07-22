@@ -3,9 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}}</title>
+    <title>Tasks</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h1>Tasks</h1>
+    <div>
+        {{range $day := .}}
+        <div class="card">
+            <h2>{{$day.Date}}</h2>
+            <div>
+                {{range $event := $day.Events}}
+                 <div class="event">
+                     <h3>{{$event.Name}}</h3>
+                     <p>Duration: {{$event.Duration}}</p>
+                     <p>Deadline: {{$event.Deadline}}</p>
+
+                     {{range $todo := $event.TodoList}}
+                     <div class="todos">
+                         <h4>{{$todo.Name}}</h4>
+                         <p>{{$todo.Description}}</p>
+                         <p>Deadline: {{$todo.Deadline}}</p>
+                         <p>Done: {{$todo.Done}}</p>
+                     </div>
+                     {{end}}
+                 </div>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+    </div>
 </body>

@@ -3,63 +3,57 @@ package handler
 import (
 	"fmt"
 	"github.com/Shu-AFK/TaskWeave/cmd/web/internal"
+	"html/template"
 	"net/http"
 	"time"
 )
 
-type Todo struct {
-	Name        string
-	Description string
-	Deadline    time.Time
-	Done        bool
-}
-
-type Event struct {
-	Name     string
-	Duration time.Duration
-	Deadline time.Time
-	Start    time.Time
-	End      time.Time
-	TodoList []Todo
-}
-
-type Day struct {
-	StartOfDay time.Time
-	EndOfDay   time.Time
-	Duration   time.Duration
-	Events     []Event
-}
-
-var parseTemplates = []string{"Jan 2 15:04", "Jan 2 3pm"}
-
-func tryParseTime(input string, layouts []string) (time.Time, string, error) {
-	var parsedTime time.Time
-	var err error
-
-	for _, layout := range layouts {
-		parsedTime, err = time.Parse(layout, input)
-		if err == nil {
-			return parsedTime, layout, nil
-		}
+func RenderDays(w http.ResponseWriter, tmpl string, days []internal.Day) {
+	tmplPath := fmt.Sprintf("templates/%s.html", tmpl)
+	t, err := template.ParseFiles(tmplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	return time.Time{}, "", fmt.Errorf("no layouts matched")
-}
-
-func checkIfInDays(timePoint time.Time, days []*Day) bool {
-	for _, day := range days {
-		if day.StartOfDay.Day() == timePoint.Day() && day.StartOfDay.Month() == timePoint.Month() {
-			return true
-		}
+	err = t.Execute(w, days)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	return false
 }
 
 func TasksHandler(w http.ResponseWriter, r *http.Request) {
-	data := internal.TemplateData{
-		Title:       "Welcome",
-		LinkToTasks: "/tasks",
+	todos := []internal.Todo{
+		{
+			Name:        "TODO",
+			Description: "hello, I'm a todo",
+			Deadline:    time.Now(),
+			Done:        false,
+		},
 	}
 
-	internal.RenderTemplate(w, "tasks", data)
+	events := []internal.Event{
+		{
+			Name:     "ABC",
+			Duration: 0,
+			Deadline: time.Now(),
+			Start:    time.Now(),
+			End:      time.Now(),
+			TodoList: todos,
+		},
+	}
+
+	days := []internal.Day{
+		{
+			Date:   time.Now(),
+			Events: events,
+		},
+		{
+			Date:   time.Now().Add(24 * time.Hour),
+			Events: events,
+		},
+	}
+
+	RenderDays(w, "tasks", days)
 }
