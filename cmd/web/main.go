@@ -17,6 +17,8 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", handler.Index)
 	r.HandleFunc("/tasks", handler.TasksHandler)
+	r.HandleFunc("/login", handler.LoginHandler)
+	r.HandleFunc("/signup", handler.SignupHandler)
 
 	// Serve static files (CSS, JS, images)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
