@@ -1,5 +1,3 @@
-// TODO: Fix password storage(Encryption)
-
 package internal
 
 import (
@@ -7,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/mail"
 )
@@ -21,8 +20,8 @@ func CreateDB() {
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS Users (
 			id INTEGER PRIMARY KEY,
-			username TEXT,
-			email TEXT,
+			username TEXT UNIQUE,
+			email TEXT UNIQUE,
 			password TEXT
 		);
 
@@ -121,10 +120,15 @@ func AddUser(username string, email string, password string) error {
 		return errors.New("email already exists")
 	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
 	_, err = db.Exec(`
 		INSERT INTO Users (username, email, password)
 		VALUES (?, ?, ?)
-	`, username, email, password)
+	`, username, email, hashedPassword)
 	if err != nil {
 		return err
 	}
@@ -139,13 +143,19 @@ func ValidateUser(username string, password string) error {
 	}
 	defer db.Close()
 
-	var exists bool
-	err = db.QueryRow("SELECT EXISTS(SELECT * FROM Users WHERE username=? AND password=?)", username, password).Scan(&exists)
+	var storedHashedPassword []byte
+
+	err = db.QueryRow("SELECT password FROM Users WHERE username = ?", username).Scan(&storedHashedPassword)
 	if err != nil {
 		return err
 	}
-	if !exists {
-		return errors.New("invalid username or password")
+
+	err = bcrypt.CompareHashAndPassword(storedHashedPassword, []byte(password))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return errors.New("invalid password")
+		}
+		return err
 	}
 
 	return nil
