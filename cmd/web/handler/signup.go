@@ -37,6 +37,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Println("User has been created:", creds.Username)
+		http.Redirect(w, r, "/tasks", http.StatusTemporaryRedirect)
 	}
 
 	// Else server the site

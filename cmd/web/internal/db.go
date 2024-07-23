@@ -1,3 +1,5 @@
+// TODO: Fix password storage(Encryption)
+
 package internal
 
 import (
@@ -125,6 +127,25 @@ func AddUser(username string, email string, password string) error {
 	`, username, email, password)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func ValidateUser(username string, password string) error {
+	db, err := sql.Open("sqlite3", "./db/app.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var exists bool
+	err = db.QueryRow("SELECT EXISTS(SELECT * FROM Users WHERE username=? AND password=?)", username, password).Scan(&exists)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return errors.New("invalid username or password")
 	}
 
 	return nil
