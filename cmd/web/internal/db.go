@@ -19,14 +19,21 @@ func CreateDB() {
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS Users (
-			id INTEGER PRIMARY KEY,
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			username TEXT UNIQUE,
 			email TEXT UNIQUE,
 			password TEXT
 		);
 
+		CREATE TABLE IF NOT EXISTS Sessions (
+		    sessionId TEXT PRIMARY KEY,
+		    userId INTEGER,
+		    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		    FOREIGN KEY(userId) REFERENCES Users(userId)
+		);
+
 		CREATE TABLE IF NOT EXISTS Todos (
-			id INTEGER PRIMARY KEY, 
+			id INTEGER PRIMARY KEY AUTOINCREMENT, 
 			name TEXT, 
 			description TEXT, 
 			deadline TEXT,
@@ -34,7 +41,7 @@ func CreateDB() {
 		);
 
 		CREATE TABLE IF NOT EXISTS Events (
-			id INTEGER PRIMARY KEY,
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT, 
 			duration TEXT,
 			deadline TEXT,
@@ -43,7 +50,7 @@ func CreateDB() {
 		);
 
 		CREATE TABLE IF NOT EXISTS Days (
-			id INTEGER PRIMARY KEY,
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			userId INTEGER,
 			date TEXT,
 			FOREIGN KEY(userId) REFERENCES Users(id)
@@ -61,7 +68,7 @@ func CreateDB() {
 			eventId INTEGER,
 			FOREIGN KEY(dayId) REFERENCES Days(id),
 			FOREIGN KEY(eventId) REFERENCES Events(id)
-		);		
+		);	
 	`)
 	if err != nil {
 		log.Fatal(err)
@@ -155,6 +162,69 @@ func ValidateUser(username string, password string) error {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return errors.New("invalid password")
 		}
+		return err
+	}
+
+	return nil
+}
+
+func CheckIfSessionExists(userId int) (bool, error) {
+	db, err := sql.Open("sqlite3", "./db/app.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var exists bool
+	err = db.QueryRow("SELECT EXISTS(SELECT * FROM Sessions WHERE userId=?)", userId).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	if exists == true {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func GetUserIdByName(username string) (int, error) {
+	db, err := sql.Open("sqlite3", "./db/app.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var id int
+	err = db.QueryRow("SELECT id FROM Users WHERE username=?", username).Scan(&id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return -1, errors.New("user does not exist")
+		} else {
+			return -1, err
+		}
+	}
+
+	return id, nil
+}
+
+func SetSessionID(userId int, sessionID string) error {
+	db, err := sql.Open("sqlite3", "./db/app.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var exists bool
+	err = db.QueryRow("SELECT EXISTS(SELECT * FROM Sessions WHERE sessionId=?)", sessionID).Scan(&exists)
+	if err != nil {
+		return err
+	}
+	if exists == true {
+		return errors.New("sessionID already exists")
+	}
+
+	_, err = db.Exec("INSERT INTO Sessions (sessionId, userId) VALUES (?, ?)", sessionID, userId)
+	if err != nil {
 		return err
 	}
 
