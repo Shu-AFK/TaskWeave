@@ -1,16 +1,22 @@
 package handler
 
 import (
-	"github.com/Shu-AFK/TaskWeave/cmd/web/internal"
+	"html/template"
 	"net/http"
 )
 
 // Index handles the homepage request
 func Index(w http.ResponseWriter, r *http.Request) {
-	data := internal.TemplateData{
-		Title:       "Welcome",
-		LinkToTasks: "/tasks",
+	tmplPath := "templates/index.html"
+	tmpl, err := template.ParseFiles(tmplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	internal.RenderTemplate(w, "index", data)
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

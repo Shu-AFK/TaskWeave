@@ -3,22 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Signup</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/form-styles.css">
 </head>
 <body>
-    <div class="signup-container">
-        <h2>Signup</h2>
+    <div class="blob"></div>
+    <div class="wrapper-signup">
         <form action="/signup" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" required><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br>
-            <label for="password_retyped">Password-Again:</label>
-            <input type="password" id="password_retyped" name="password_retyped" required><br>
+        <h2>Signup</h2>
+            <div class="input-box">
+                <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                <input type="text" id="username" name="username" required><br>
+                <label for="username">Username:</label>
+            </div>
+            <div class="input-box">
+                <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                <input type="text" id="email" name="email" required><br>
+                <label for="email">Email:</label>
+            </div>
+            <div class="input-box">
+                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                <input type="password" id="password" name="password" required><br>
+                <label for="password">Password:</label>
+            </div>
+            <div class="input-box">
+                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                <input type="password" id="password_retyped" name="password_retyped" required><br>
+                <label for="password_retyped">Retype your Password:</label>
+            </div>
             <button type="submit">Signup</button>
         </form>
     </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
