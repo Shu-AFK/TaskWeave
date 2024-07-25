@@ -1,3 +1,5 @@
+// TODO: Add session to signup
+
 package handler
 
 import (
@@ -36,6 +38,19 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		correct, err := internal.CheckIfSessionIsCorrect(creds.Username, r)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if !correct {
+			err = internal.SetSessionCookie(w, creds.Username)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
 		log.Println("User has been created:", creds.Username)
 		http.Redirect(w, r, "/tasks", http.StatusTemporaryRedirect)
 	}

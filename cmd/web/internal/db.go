@@ -207,6 +207,26 @@ func GetUserIdByName(username string) (int, error) {
 	return id, nil
 }
 
+func GetUsernameById(userId int) (string, error) {
+	db, err := sql.Open("sqlite3", "./db/app.db")
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	var username string
+	err = db.QueryRow("SELECT username FROM Users WHERE id=?", userId).Scan(&username)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", errors.New("user does not exist")
+		} else {
+			return "", err
+		}
+	}
+
+	return username, nil
+}
+
 func SetSessionID(userId int, sessionID string) error {
 	db, err := sql.Open("sqlite3", "./db/app.db")
 	if err != nil {
@@ -229,4 +249,20 @@ func SetSessionID(userId int, sessionID string) error {
 	}
 
 	return nil
+}
+
+func GetSessionIDbyUserID(userid int) (string, error) {
+	db, err := sql.Open("sqlite3", "./db/app.db")
+	if err != nil {
+		return "", nil
+	}
+	defer db.Close()
+
+	var sessionID string
+	err = db.QueryRow("SELECT sessionId FROM Sessions WHERE userId=?", userid).Scan(&sessionID)
+	if err != nil {
+		return "", err
+	}
+
+	return sessionID, nil
 }
