@@ -1,0 +1,38 @@
+nav a {
+    font-size: 18px;
+    color: black;
+}
+
+nav a:hover {
+    color: #fa709a;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    background-color: #fff;
+    padding: 10px 5%;
+    height: 10vh;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-box {
+    display: block;
+    height: 6.5vh;
+}
+
+.nav-menu {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    list-style-image: none;
+}
+
+.menu-item {
+    display: inline-block;
+    margin-left: 10px;
+}

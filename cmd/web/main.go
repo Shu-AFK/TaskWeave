@@ -23,7 +23,7 @@ func main() {
 	// Serve assets
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("assets/"))))
 
-	// Serve static files (CSS, JS, images)
+	// Serve static files (CSS)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 
 	// Start the server

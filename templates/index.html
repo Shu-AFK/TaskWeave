@@ -4,25 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskWeave</title>
-    <link rel="stylesheet" type="text/css" href="/static/index-styles.css">
+    <link rel="stylesheet" type="text/css" href="/static/navbar.css?v=1">
+    <link rel="stylesheet" type="text/css" href="/static/index-styles.css?v=1">
     <link rel="icon" href="/assets/icon-modified.png" type="image/png">
 </head>
 <body>
-    <h1>TaskWeave</h1>
-    <button><a href="/login">Login</a></button>
-    <button><a href="/signup">Signup</a></button>
-    <div class="content">
-        <p>TaskWeave is a task manager, that is currently <b>WORK IN PROGRESS.</b></p>
-        <ul>
-            <li><b>Workload Balancing:</b> TaskWeave helps you distribute your work evenly across your day.</li>
-            <li><b>Prioritization</b> Assign priorities according to your tasks' urgency and importance.</li>
-            <li><b>Task Tracking:</b> Helps you stay on track with all tasks, avoiding missing due dates.</li>
+    <nav class="navbar">
+        <div class="logo-box">
+            <a href="/">
+                <img src="/assets/logo-modified.png" alt="Logo">
+            </a>
+        </div>
+        <ul class="nav-menu">
+            <li class="menu-item"><a href="" target="_blank" rel="noopener noreferrer">About</a></li>
+            <li class="menu-item"><a href="/login" target="_blank" rel="noopener noreferrer">Login</a></li>
+            <li class="menu-item"><a href="/signup" target="_blank" rel="noopener noreferrer">Signup</a></li>
         </ul>
-        <br>
-        <p><b><a href="/tasks">Here</a></b> you can view your current tasks.</p>
-    </div>
+    </nav>
 
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <div class="body-content">
+        <h1>TaskWeave</h1>
+        <button><a href="/login">Login</a></button>
+        <button><a href="/signup">Signup</a></button>
+        <div class="content">
+            <p>TaskWeave is a task manager, that is currently <b>WORK IN PROGRESS.</b></p>
+            <ul>
+                <li><b>Workload Balancing:</b> TaskWeave helps you distribute your work evenly across your day.</li>
+                <li><b>Prioritization</b> Assign priorities according to your tasks' urgency and importance.</li>
+                <li><b>Task Tracking:</b> Helps you stay on track with all tasks, avoiding missing due dates.</li>
+            </ul>
+            <br>
+            <p><b><a href="/tasks">Here</a></b> you can view your current tasks.</p>
+        </div>
+
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </div>
 </body>
 </html>
