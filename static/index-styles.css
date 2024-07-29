@@ -27,11 +27,24 @@ a {
     padding: 30px;
     line-height: 1.6;
     flex-grow: 1;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 h1 {
     font-size: 2.5em;
     color: #fa709a;
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 20px;
+    color: #babdff;
+    font-size: 2.2em;
+}
+
+p {
     margin-bottom: 20px;
 }
 
@@ -64,4 +77,10 @@ button a {
 
 .content a:hover {
     text-decoration: underline;
+}
+
+.content ul {
+    padding: 20px;
+    background: #2f2f5f;
+    border-radius: 5px;
 }

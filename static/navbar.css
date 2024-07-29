@@ -1,17 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+nav {
+    background: #fa709a;
+}
+
 nav a {
     font-size: 18px;
-    color: black;
+    color: #fff;
 }
 
 nav a:hover {
-    color: #fa709a;
+    color: #1f1f47;
 }
 
 .navbar {
     position: sticky;
     top: 0;
     z-index: 99;
-    background-color: #fff;
     padding: 10px 5%;
     height: 10vh;
 
@@ -23,16 +35,17 @@ nav a:hover {
 .logo-box {
     display: block;
     height: 6.5vh;
+    margin-left: 4vw;
 }
 
 .nav-menu {
-    margin: 0;
     padding: 0;
     list-style-type: none;
     list-style-image: none;
+    margin-right: 8vw;
 }
 
 .menu-item {
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 3vw;
 }
